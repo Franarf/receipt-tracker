@@ -1,0 +1,30 @@
+version: "3.9"
+services:
+  web:
+    build: .
+    command: bash -lc "python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - db
+  db:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: receipt_tracker
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  # Optional: a dedicated OCR service container (kept idle for now)
+  ocr:
+    image: tesseractshadow/tesseract4re
+    command: tail -f /dev/null
+
+volumes:
+  pgdata:
