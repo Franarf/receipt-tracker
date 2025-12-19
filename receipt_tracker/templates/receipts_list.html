@@ -1,24 +1,14 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Your Receipts</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 40px; }
-        .receipt { margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #ccc; }
-        img { max-width: 200px; display: block; margin-bottom: 10px; }
-        a { color: #2980b9; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-    </style>
-</head>
-<body>
+{% extends "base.html" %}
 
+{% block title %}Your Receipts{% endblock %}
+
+{% block content %}
 <h1>Your Receipts</h1>
-<a href="/receipts/upload/">Upload a new receipt</a>
 
 {% for receipt in receipts %}
     <div class="receipt">
         {% if receipt.image %}
-            <img src="{{ receipt.image.url }}" alt="Receipt image">
+            <img src="{{ receipt.image.url }}" alt="Receipt image" style="max-width:200px;">
         {% endif %}
 
         <p><strong>Vendor:</strong> {{ receipt.vendor }}</p>
@@ -30,6 +20,4 @@
 {% empty %}
     <p>No receipts uploaded yet.</p>
 {% endfor %}
-
-</body>
-</html>
+{% endblock %}

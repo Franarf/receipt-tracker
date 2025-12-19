@@ -1,20 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Receipt Tracker</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 40px; }
-        h1 { color: #2c3e50; }
-        a { display: block; margin: 10px 0; text-decoration: none; color: #2980b9; }
-        a:hover { text-decoration: underline; }
-    </style>
-</head>
-<body>
-    <h1>Welcome to Receipt Tracker</h1>
-    <p>This app helps you upload receipts, run OCR, and track spending.</p>
+{% extends "base.html" %}
 
-    <h2>Navigation</h2>
-    <a href="/receipts/">Go to Receipts</a>
-    <a href="/admin/">Admin Dashboard</a>
-</body>
-</html>
+{% block title %}Home — Receipt Tracker{% endblock %}
+
+{% block content %}
+<h1>Welcome to Receipt Tracker</h1>
+<p>This app helps you upload receipts, run OCR, and track spending.</p>
+{% endblock %}
+
