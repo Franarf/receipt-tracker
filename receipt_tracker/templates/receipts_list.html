@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your Receipts</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .receipt { margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #ccc; }
+        img { max-width: 200px; display: block; margin-bottom: 10px; }
+        a { color: #2980b9; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<h1>Your Receipts</h1>
+<a href="/receipts/upload/">Upload a new receipt</a>
+
+{% for receipt in receipts %}
+    <div class="receipt">
+        {% if receipt.image %}
+            <img src="{{ receipt.image.url }}" alt="Receipt image">
+        {% endif %}
+
+        <p><strong>Vendor:</strong> {{ receipt.vendor }}</p>
+        <p><strong>Date:</strong> {{ receipt.date }}</p>
+        <p><strong>Total:</strong> {{ receipt.total }} {{ receipt.currency }}</p>
+
+        <a href="#">View details (coming soon)</a>
+    </div>
+{% empty %}
+    <p>No receipts uploaded yet.</p>
+{% endfor %}
+
+</body>
+</html>
