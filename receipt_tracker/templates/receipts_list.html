@@ -25,7 +25,7 @@
         <p><strong>Date:</strong> {{ receipt.date }}</p>
         <p><strong>Total:</strong> {{ receipt.total }} {{ receipt.currency }}</p>
 
-        <a href="#">View details (coming soon)</a>
+        <a href="/receipts/{{ receipt.pk }}/">View details</a>
     </div>
 {% empty %}
     <p>No receipts uploaded yet.</p>

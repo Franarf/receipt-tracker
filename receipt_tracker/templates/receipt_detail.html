@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Receipt Details</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        img { max-width: 400px; margin-bottom: 20px; }
+        a { color: #2980b9; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        table { border-collapse: collapse; width: 60%; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; }
+        th { background: #f5f5f5; }
+    </style>
+</head>
+<body>
+
+<a href="/receipts/">← Back to receipts</a>
+
+<h1>Receipt Details</h1>
+
+{% if receipt.image %}
+    <img src="{{ receipt.image.url }}" alt="Receipt image">
+{% endif %}
+
+<p><strong>Vendor:</strong> {{ receipt.vendor }}</p>
+<p><strong>Date:</strong> {{ receipt.date }}</p>
+<p><strong>Total:</strong> {{ receipt.total }} {{ receipt.currency }}</p>
+
+<h2>Items</h2>
+
+{% if items %}
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Qty</th>
+        <th>Unit Price</th>
+        <th>Total</th>
+    </tr>
+    {% for item in items %}
+    <tr>
+        <td>{{ item.name }}</td>
+        <td>{{ item.qty }}</td>
+        <td>{{ item.unit_price }}</td>
+        <td>{{ item.line_total }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No items recorded yet.</p>
+{% endif %}
+
+<h2>OCR Text</h2>
+<pre>{{ receipt.ocr_text }}</pre>
+
+</body>
+</html>

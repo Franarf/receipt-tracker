@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 
 from .forms import ReceiptUploadForm
@@ -28,3 +28,9 @@ def upload_receipt(request):
 
 def upload_success(request):
     return render(request, "upload_success.html")
+
+#### This loads a single receipt and its items.
+def receipt_detail(request, pk):
+    receipt = get_object_or_404(Receipt, pk=pk)
+    items = receipt.items.all()
+    return render(request, "receipt_detail.html", {"receipt": receipt, "items": items})
