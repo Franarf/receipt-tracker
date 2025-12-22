@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/litepicker/dist/css/litepicker.css" /> 
+    <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/litepicker.js"></script>
+
+
     <title>{% block title %}Receipt Tracker{% endblock %}</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 40px; }
@@ -23,6 +27,17 @@
 </nav>
 
 {% block content %}{% endblock %}
+
+
+
+<script> new Litepicker({ 
+    element: document.getElementById('date_range'), 
+    singleMode: false, numberOfMonths: 2, 
+    numberOfColumns: 2, format: "YYYY-MM-DD", 
+    minDate: "{{ earliest_date }}", 
+    maxDate: "{{ latest_date }}", 
+    autoApply: true, }); 
+</script>
 
 </body>
 </html>

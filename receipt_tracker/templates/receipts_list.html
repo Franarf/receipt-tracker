@@ -3,8 +3,98 @@
 {% block title %}Your Receipts{% endblock %}
 
 {% block content %}
+
 <h1>Your Receipts</h1>
 
+<!----- FORM Section ------>
+<form method="GET"  action="{% url 'receipts-index' %}" style="margin-bottom: 30px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+
+    <input type="text" name="q" placeholder="Search vendor or OCR text"
+           value="{{ query|default:'' }}" style="padding: 6px; width: 250px;">
+
+    <select name="vendor" style="padding: 6px;">
+        <option value="all">All vendors</option>
+        {% for v in vendors %}
+            <option value="{{ v.id }}" {% if selected_vendor == v.id|stringformat:"s" %}selected{% endif %}>
+                {{ v.name }}
+            </option>
+        {% endfor %}
+    </select>
+<!----- Select dates ------>
+    <input type="text"
+       id="date_range"
+       name="date_range"
+       value="{{ date_range|default:'' }}"
+       placeholder="Select date range"
+       style="padding: 6px; width: 250px;">
+
+    <button type="submit" style="padding: 6px 12px;">Filter</button>
+
+<!----- Reset button ------->
+    <a href="/receipts/" style="
+        padding: 6px 12px;
+        background: #f5f5f5;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        text-decoration: none;
+        color: #333;">
+    Clear all filters
+    </a>
+
+    <select name="sort" style="padding: 6px;">
+    <option value="date_desc" {% if sort == "date_desc" %}selected{% endif %}>Date (newest first)</option>
+    <option value="date_asc" {% if sort == "date_asc" %}selected{% endif %}>Date (oldest first)</option>
+
+    <option value="total_desc" {% if sort == "total_desc" %}selected{% endif %}>Total (high → low)</option>
+    <option value="total_asc" {% if sort == "total_asc" %}selected{% endif %}>Total (low → high)</option>
+
+    <option value="vendor_asc" {% if sort == "vendor_asc" %}selected{% endif %}>Vendor (A → Z)</option>
+    <option value="vendor_desc" {% if sort == "vendor_desc" %}selected{% endif %}>Vendor (Z → A)</option>
+    </select>
+</form>
+
+
+<!----- Active filters ------->
+{% if active_filters %}
+<div style="margin-bottom: 20px;">
+    <strong>Active filters:</strong>
+
+    {% for key, value in active_filters.items %}
+        <span style="
+            display: inline-block;
+            background:#e8f0fe73;
+            border: 1px solid #bcd0ff;
+            padding: 4px 6px;
+            border-radius: 20px;
+            margin-right: 10px;
+            margin-bottom: 8px;
+            font-size: 0.8rem;
+            ">
+            {{ key|capfirst }}: {{ value }}
+
+            <a href="?{{ remove_urls.key}}" 
+               style="margin-left: 6px; color: #c00; text-decoration: none;">
+                ✕
+            </a>
+        </span>
+    {% endfor %}
+
+    <a href="/receipts/" style="
+        display: -webkit-inline-box;
+        padding: 4px 8px;
+        background: #ca6565a6;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        text-decoration: none;
+        color: #333;
+        margin-left: 10px;
+        ">
+        Clear all
+    </a>
+</div>
+{% endif %}
+
+<!----- GRID to show receipts or otherwise ------->
 <div class="grid">
     {% for receipt in receipts %}
         <div class="card">
@@ -24,7 +114,7 @@
             </div>
         </div>
     {% empty %}
-        <p>No receipts uploaded yet.</p>
+        <p>There seems to be NO receipts uploaded yet.</p>
     {% endfor %}
 </div>
 
