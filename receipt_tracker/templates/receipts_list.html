@@ -96,7 +96,7 @@
 
 <!----- GRID to show receipts or otherwise ------->
 <div class="grid">
-    {% for receipt in receipts %}
+    {% for receipt in page_obj %}
         <div class="card">
             <a href="/receipts/{{ receipt.pk }}/">
                 {% if receipt.image %}
@@ -116,6 +116,24 @@
     {% empty %}
         <p>There seems to be NO receipts uploaded yet.</p>
     {% endfor %}
+</div>
+
+<div style="margin-top: 20px; display: flex; gap: 10px; align-items: center;"> 
+        
+    {% if page_obj.has_previous %} 
+        <a href="?page={{ page_obj.previous_page_number }}&{{ request.GET.urlencode }}" 
+           style="padding: 6px 12px; border: 1px solid #ccc; border-radius: 4px; text-decoration: none;"> 
+           Previous 
+        </a> 
+    {% endif %} 
+        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span> 
+    
+    {% if page_obj.has_next %} 
+        <a href="?page={{ page_obj.next_page_number }}&{{ request.GET.urlencode }}" 
+           style="padding: 6px 12px; border: 1px solid #ccc; border-radius: 4px; text-decoration: none;"> 
+           Next 
+        </a> 
+    {% endif %} 
 </div>
 
 <style>

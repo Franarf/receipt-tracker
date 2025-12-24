@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.db.models import Min, Max
+from django.core.paginator import Paginator
 
 from .forms import ReceiptUploadForm
 from .models import Receipt, Vendor
@@ -33,7 +34,7 @@ def index(request):
         start_date, end_date = date_range.split(" - ")
 
 
-    # Active filters dictionary
+# Active FILTER dictionary
     active_filters = {}
 
     # Apply filters
@@ -59,7 +60,7 @@ def index(request):
        # active_filters["end"] = end_date
 
 
- #  Sorting logic
+ #  SORTING logic
     sort_options = {
         "date_desc": "-date",
         "date_asc": "date",
@@ -105,7 +106,12 @@ def remove_param(request, param):
     if param in query:
         del query[param]
     return query.urlencode()
+# Pagination 
+paginator = Paginator(receipts, 10) # 10 receipts per page 
+page_number = request.GET.get("page") 
+page_obj = paginator.get_page(page_number)
 
+# UPLOAD A RECEIPT
 def upload_receipt(request):
     if request.method == "POST":
         form = ReceiptUploadForm(request.POST, request.FILES)
@@ -118,7 +124,6 @@ def upload_receipt(request):
         form = ReceiptUploadForm()
 
     return render(request, "upload.html", {"form": form})
-
 
 def upload_success(request):
     return render(request, "upload_success.html")
