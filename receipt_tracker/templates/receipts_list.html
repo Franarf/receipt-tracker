@@ -96,10 +96,10 @@
 
 <!----- GRID to show receipts or otherwise ------->
 <div class="grid">
-    {% for receipt in page_obj %}
+    {% for r in page_obj %}
         <div class="card">
             <a href="/receipts/{{ receipt.pk }}/">
-                {% if receipt.image %}
+                {% if r.image %}
                     <img src="{{ receipt.image.url }}" alt="Receipt image">
                 {% else %}
                     <div class="placeholder">No Image</div>
@@ -107,9 +107,9 @@
             </a>
 
             <div class="info">
-                <p><strong>{{ receipt.vendor }}</strong></p>
-                <p>{{ receipt.date }}</p>
-                <p>{{ receipt.total }} {{ receipt.currency }}</p>
+                <p><strong>{{ r.vendor }}</strong></p>
+                <p>{{ r.date }}</p>
+                <p>{{ r.total }} {{ r.currency }}</p>
                 <a href="/receipts/{{ receipt.pk }}/">View details</a>
             </div>
         </div>

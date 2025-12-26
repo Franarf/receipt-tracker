@@ -12,8 +12,9 @@ from .models import Receipt, Vendor
 def index(request):
     receipts = Receipt.objects.all().order_by("-date")
     vendors = Vendor.objects.all()
-    print("Receipts list--------: ",receipts)
+    # print("Receipts list--------: ",receipts)
 
+# Earliest / latest dates for Litepicker
     date_range = Receipt.objects.aggregate( 
         earliest=Min("date"), 
         latest=Max("date") 
@@ -22,10 +23,9 @@ def index(request):
     # Read GET parameters
     query = request.GET.get("q")
     vendor_id = request.GET.get("vendor")
-    start_date = request.GET.get("start")
-    end_date = request.GET.get("end")
     sort = request.GET.get("sort", "date_desc")
-    # get the date range for flatpicker
+
+    # Litepicker date range
     date_range = request.GET.get("date_range") 
     start_date = None 
     end_date = None
@@ -36,7 +36,7 @@ def index(request):
 
 # Active FILTER dictionary
     active_filters = {}
-
+    
     # Apply filters
     if query:
         receipts = receipts.filter(
@@ -47,18 +47,17 @@ def index(request):
         active_filters["q"] = query
 
     if vendor_id and vendor_id != "all":
-        vendor_obj = Vendor.objects.get(id=vendor_id)
-        receipts = receipts.filter(vendor=vendor_obj)
-       # active_filters["vendor"] = vendor_obj.name
+        # vendor_obj = Vendor.objects.get(id=vendor_id)
+        receipts = receipts.filter(vendor=vendor_id)
+        active_filters["vendor"] = vendor_id.name
 
     if start_date:
         receipts = receipts.filter(date__isnull=False, date__gte=start_date)
-       # active_filters["start"] = start_date
+        active_filters["start"] = start_date
 
     if end_date:
         receipts = receipts.filter(date__isnull=False, date__lte=end_date)
-       # active_filters["end"] = end_date
-
+        active_filters["end"] = end_date
 
  #  SORTING logic
     sort_options = {
@@ -70,10 +69,20 @@ def index(request):
         "vendor_desc": "-vendor__name",
     }
 
-    receipts = receipts.order_by(sort_options.get(sort, "-date"))
-
-    # Add sort to active filters (optional)
+    receipts = receipts.order_by(sort_options.get(sort, "-date")) 
     active_filters["sort"] = sort
+    
+ # PAGINATION 
+    paginator = Paginator(receipts, 10) # 10 receipts per page 
+    page_number = request.GET.get("page") 
+    page_obj = paginator.get_page(page_number)
+    # print("PAGE OBJ!!!!",page_obj)
+
+# Clean querystring (remove page) 
+    query_without_page = request.GET.copy() 
+    if "page" in query_without_page: 
+        del query_without_page["page"] 
+    clean_querystring = query_without_page.urlencode()
 
     # Build remove-filter URLs
     remove_urls = {}
@@ -87,17 +96,16 @@ def index(request):
         request,
         "receipts_list.html",
         {
-            "receipts": receipts,
+            "page_obj": page_obj,
             "vendors": vendors,
             "query": query,
             "selected_vendor": vendor_id,
-            "start_date": start_date,
-            "end_date": end_date,
+            "date_range": date_range, 
+            #"earliest_date": date_limits["earliest"], 
+            #"latest_date": date_limits["latest"],
             "active_filters": active_filters,
             "remove_urls": remove_urls,
-            #"sort": sort, 
-            #"earliest_date": date_range["earliest"],
-            #"latest_date": date_range["latest"], 
+            "clean_querystring": clean_querystring,
         },
     )
 
@@ -106,10 +114,7 @@ def remove_param(request, param):
     if param in query:
         del query[param]
     return query.urlencode()
-# Pagination 
-paginator = Paginator(receipts, 10) # 10 receipts per page 
-page_number = request.GET.get("page") 
-page_obj = paginator.get_page(page_number)
+
 
 # UPLOAD A RECEIPT
 def upload_receipt(request):
@@ -132,4 +137,6 @@ def upload_success(request):
 def receipt_detail(request, pk):
     receipt = get_object_or_404(Receipt, pk=pk)
     items = receipt.items.all()
+    print("Rec detail", receipt)
     return render(request, "receipt_detail.html", {"receipt": receipt, "items": items})
+    

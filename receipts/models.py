@@ -11,6 +11,7 @@ class Vendor(models.Model):
 
     def __str__(self):
         return self.name
+    
 # Receipts class, for the individual receipts added 
 class Receipt(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
