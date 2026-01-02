@@ -94,33 +94,51 @@
 </div>
 {% endif %}
 
-<!----- GRID to show receipts or otherwise ------->
-<div class="grid">
-    {% for r in page_obj %}
-        <div class="card">
-            <a href="/receipts/{{ receipt.pk }}/">
-                {% if r.image %}
-                    <img src="{{ receipt.image.url }}" alt="Receipt image">
-                {% else %}
-                    <div class="placeholder">No Image</div>
-                {% endif %}
-            </a>
+<!----- GRID to show RECEIPTS Thumbs ------->
+<div class="grid"> 
+    {% for r in page_obj %} 
 
-            <div class="info">
-                <p><strong>{{ r.vendor }}</strong></p>
-                <p>{{ r.date }}</p>
-                <p>{{ r.total }} {{ r.currency }}</p>
-                <a href="/receipts/{{ receipt.pk }}/">View details</a>
-            </div>
-        </div>
-    {% empty %}
-        <p>There seems to be NO receipts uploaded yet.</p>
-    {% endfor %}
+        <div class="card"> 
+
+            <!-- Thumbnail -->
+            <a href="/receipts/{{ r.pk }}/"> 
+                {% if r.image %} 
+                    <div style=" width: 100%; height: 16rem; overflow: hidden; border-radius: 8px; margin-bottom: 10px; "> 
+                        <img src="{{ r.image.url }}" 
+                        alt="Receipt image" 
+                        style="width: 100%; height: 100%; object-fit: cover;"> 
+                    </div> 
+
+                {% else %} 
+                    <div class="placeholder">No Image</div> 
+                {% endif %} 
+            </a> 
+
+            <div class="info"> 
+                <span style=" background: {{ r.vendor.color }}; color: white; padding: 3px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; "> 
+                    {{ r.vendor.name }} 
+                </span>
+               
+
+                <!-- Receipt date -->
+                <p style="margin: 5px 0; font-size: 14px;">
+                    {{ r.date }}
+                </p> 
+
+                <!-- Total -->
+                <p style="font-weight: bold; font-size: 16px;">
+                    {{ r.total }} {{ r.currency }}
+                </p> 
+            </div> 
+        </div> {% empty %} 
+        <p>There seems to be NO receipts uploaded yet.</p> 
+    {% endfor %} 
 </div>
 
-<div style="margin-top: 20px; display: flex; gap: 10px; align-items: center;"> 
 
 <!----- PAGINATION ------->
+<div style="margin-top: 20px; display: flex; gap: 10px; align-items: center;"> 
+
 {% if page_obj.has_previous %} 
 <a href="?page={{ page_obj.previous_page_number }}{% if clean_querystring %}&{{ clean_querystring }}{% endif %}" 
    style="padding: 6px 12px; border: 1px solid #ccc; border-radius: 4px; text-decoration: none;"> 
@@ -149,7 +167,7 @@
 
     .card {
         border: 1px solid #ddd;
-        border-radius: 8px;
+        border-radius: 20px;
         padding: 15px;
         background: #fff;
         box-shadow: 0 2px 5px rgba(0,0,0,0.05);

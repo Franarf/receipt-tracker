@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
-
+import hashlib
 
 
 
@@ -9,9 +9,28 @@ class Vendor(models.Model):
     name = models.CharField(max_length=255)
     address = models.TextField(blank=True, null=True)
 
-    def __str__(self):
-        return self.name
+    def color(self): 
+        # Hash the vendor name → stable hex 
+        h = hashlib.md5(self.name.encode("utf-8")).hexdigest() 
+        # Take first 6 chars as color 
+        base_color = h[:6] 
+        # Optionally tweak brightness (simple approach) 
+        r = int(base_color[0:2], 16) 
+        g = int(base_color[2:4], 16) 
+        b = int(base_color[4:6], 16) 
+        
+        # Lighten a bit so text is readable 
+        r = min(r + 40, 255) 
+        g = min(g + 40, 255) 
+        b = min(b + 40, 255) 
+        
+        return f"#{r:02x}{g:02x}{b:02x}"
     
+    
+def __str__(self):
+    return self.name
+    
+
 # Receipts class, for the individual receipts added 
 class Receipt(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -25,6 +44,7 @@ class Receipt(models.Model):
 
     def __str__(self):
         return f"Receipt {self.id} - {self.vendor}"
+
 
 # Items class, for the individual items added on each receipt 
 class Item(models.Model):

@@ -49,7 +49,7 @@ def index(request):
     if vendor_id and vendor_id != "all":
         # vendor_obj = Vendor.objects.get(id=vendor_id)
         receipts = receipts.filter(vendor=vendor_id)
-        active_filters["vendor"] = vendor_id.name
+        active_filters["vendor"] = vendor_id
 
     if start_date:
         receipts = receipts.filter(date__isnull=False, date__gte=start_date)
